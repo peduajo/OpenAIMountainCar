@@ -61,11 +61,13 @@ for i_episode in range(episodios):
     observation = env.reset()
     sumRec = 0
     for iter in range(iteraciones_maximas):
+        if i_episode == episodios-1:
+            env.render()
         s = getState(env,observation)
         action,_ = maxQ(s)
         observation, recompensa, done, _ = env.step(action)
         N[s][action] += 1
-        alpha = float(500)/float(499 + N[s][action])
+        alpha = float(200)/float(199 + N[s][action])
         s2 = getState(env,observation)
         _, maxVal = maxQ(s2)
         incQ(s, action, alpha, recompensa + gamma * maxVal)
@@ -76,6 +78,4 @@ for i_episode in range(episodios):
         print("Episodio {0} acabado con recompensa total de {1} ".format(i_episode,sumRec))
     if i_episode>= (episodios-100):
         evaluacion.append(sumRec)
-        if i_episode == episodios-1:
-            env.render()
 print "evaluacion media: ",np.mean(evaluacion)
